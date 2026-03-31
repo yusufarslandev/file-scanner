@@ -8,9 +8,8 @@ public class OcrService
 
     public OcrService(IWebHostEnvironment env)
     {
-        // tessdata folder must exist at project root or be set via env var
         _tessDataPath = Environment.GetEnvironmentVariable("TESSDATA_PREFIX")
-            ?? Path.Combine(env.ContentRootPath, "tessdata");
+            ?? "/usr/share/tesseract-ocr/5/tessdata";
     }
 
     // Returns extracted plain text from image bytes. Empty string on failure.
