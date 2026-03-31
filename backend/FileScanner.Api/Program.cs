@@ -2,6 +2,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSingleton<FileScanner.Api.Services.PdfService>();
+builder.Services.AddSingleton<FileScanner.Api.Services.OcrService>();
 
 var app = builder.Build();
 
