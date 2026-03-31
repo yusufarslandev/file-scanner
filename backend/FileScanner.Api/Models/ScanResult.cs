@@ -45,6 +45,6 @@ public class LineItem
 public class MetaInfo
 {
     public double Confidence { get; set; }
-    public string Source { get; set; } = string.Empty; // "ocr" | "llm" | "combined"
+    public ExtractionSource Source { get; set; } = ExtractionSource.Ocr;
     public long ProcessingTimeMs { get; set; }
 }

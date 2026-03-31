@@ -4,5 +4,5 @@ public class ExtractionCandidate
 {
     public ScanResult Result { get; set; } = new();
     public double Confidence { get; set; }
-    public string Source { get; set; } = string.Empty;
+    public ExtractionSource Source { get; set; } = ExtractionSource.Ocr;
 }
