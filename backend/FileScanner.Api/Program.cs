@@ -1,38 +1,20 @@
+using FileScanner.Api.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddSingleton<FileScanner.Api.Services.PdfService>();
-builder.Services.AddSingleton<FileScanner.Api.Services.OcrService>();
-builder.Services.AddSingleton<FileScanner.Api.Services.LlmService>();
-builder.Services.AddSingleton<FileScanner.Api.Services.ExtractionOrchestrator>();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-
-app.UseHttpsRedirection();
-
-var summaries = new[]
+builder.Services.AddControllers();
+builder.Services.AddCors(options =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    options.AddDefaultPolicy(policy =>
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
-app.Run();
+builder.Services.AddSingleton<PdfService>();
+builder.Services.AddSingleton<OcrService>();
+builder.Services.AddSingleton<LlmService>();
+builder.Services.AddSingleton<ExtractionOrchestrator>();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+var app = builder.Build();
+app.UseCors();
+app.MapControllers();
+app.Run();
