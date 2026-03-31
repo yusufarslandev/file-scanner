@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/components/downloadbutton.tsx","./src/components/resulttable.tsx","./src/components/uploadzone.tsx","./src/services/scannerapi.ts","./src/types/scanresult.ts"],"version":"5.9.3"}
