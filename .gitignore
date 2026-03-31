@@ -1,7 +1,48 @@
+# ─── .NET ────────────────────────────────────────────────────────────────────
 bin/
 obj/
+*.user
+*.suo
+.vs/
+*.pubxml
+*.pubxml.user
+launchSettings.json
+TestResults/
+
+# ─── Node / Frontend ─────────────────────────────────────────────────────────
 node_modules/
 dist/
+.vite/
+*.local
+
+# ─── Environment & Secrets ───────────────────────────────────────────────────
 .env
-*.user
+.env.*
+!.env.example
+
+# ─── Docker ──────────────────────────────────────────────────────────────────
+docker-compose.override.yml
+
+# ─── Tesseract trained data (large binary files) ─────────────────────────────
+backend/FileScanner.Api/tessdata/*.traineddata
+
+# ─── Ollama model cache ───────────────────────────────────────────────────────
+ollama/models/
+
+# ─── Logs ────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ─── OS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── IDE ─────────────────────────────────────────────────────────────────────
+.idea/
+*.swp
+*.swo
+
+# ─── Tooling ─────────────────────────────────────────────────────────────────
 .superpowers/
+*.tsbuildinfo
