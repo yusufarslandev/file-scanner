@@ -4,6 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<FileScanner.Api.Services.PdfService>();
 builder.Services.AddSingleton<FileScanner.Api.Services.OcrService>();
 builder.Services.AddSingleton<FileScanner.Api.Services.LlmService>();
+builder.Services.AddSingleton<FileScanner.Api.Services.ExtractionOrchestrator>();
 
 var app = builder.Build();
 
