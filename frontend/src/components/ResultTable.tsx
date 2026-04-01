@@ -80,6 +80,17 @@ export function ResultTable({ result }: Props) {
       <div className="px-4 py-2 text-xs text-gray-400 mt-2">
         Kaynak: {result.meta.source} · Güven: %{Math.round(result.meta.confidence * 100)} · {result.meta.processingTimeMs}ms
       </div>
+
+      {result.ocrText && (
+        <div className="mt-4 px-4">
+          <details className="cursor-pointer">
+            <summary className="text-xs font-semibold uppercase tracking-wider text-gray-500 pb-2">OCR Ham Metin</summary>
+            <pre className="bg-gray-50 p-3 rounded text-xs max-h-48 overflow-y-auto whitespace-pre-wrap break-words font-mono text-gray-700">
+              {result.ocrText}
+            </pre>
+          </details>
+        </div>
+      )}
     </div>
   );
 }

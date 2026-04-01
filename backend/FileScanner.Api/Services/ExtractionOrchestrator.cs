@@ -54,6 +54,7 @@ public class ExtractionOrchestrator
             Source = best.Source,
             ProcessingTimeMs = sw.ElapsedMilliseconds
         };
+        best.Result.OcrText = ocrText;
 
         return best.Result;
     }

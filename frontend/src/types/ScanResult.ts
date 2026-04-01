@@ -39,4 +39,5 @@ export interface ScanResult {
   financials: FinancialsInfo;
   items: LineItem[];
   meta: MetaInfo;
+  ocrText?: string;
 }
