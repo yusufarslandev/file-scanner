@@ -7,6 +7,7 @@ public class ScanResult
     public FinancialsInfo Financials { get; set; } = new();
     public List<LineItem> Items { get; set; } = [];
     public MetaInfo Meta { get; set; } = new();
+    public string OcrText { get; set; } = string.Empty;
 }
 
 public class DocumentInfo
