@@ -1,5 +1,11 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
+
+# Copy project file and restore dependencies
+COPY FileScanner.Api.csproj .
+RUN dotnet restore FileScanner.Api.csproj
+
+# Copy source code
 COPY . .
 RUN dotnet publish -c Release -o /app/publish
 
