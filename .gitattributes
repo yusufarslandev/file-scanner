@@ -1,0 +1,4 @@
+# Disable line ending normalization for shell scripts
+ollama/entrypoint.sh text eol=lf -delta
+docker-compose.yml text eol=lf -delta
+backend/FileScanner.Api/FileScanner.Api.csproj text eol=lf -delta
