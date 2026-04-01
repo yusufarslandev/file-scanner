@@ -12,7 +12,7 @@ public class LlmService
     public LlmService(IConfiguration config)
     {
         var baseUrl = config["OLLAMA_BASE_URL"] ?? "http://localhost:11434";
-        _client = new OllamaApiClient(new Uri(baseUrl));
+        _client = new OllamaApiClient(baseUrl);
     }
 
     // Sends image bytes directly to LLaVA multimodal model.
