@@ -3,8 +3,8 @@ services:
     build: ./backend/FileScanner.Api
     container_name: file-scanner-backend
     environment:
-      - Llm__Provider=openai
-      - Llm__OpenAi__ApiKey=${LLM_API_KEY}
+      - Llm__Provider=gemini
+      - Llm__Gemini__ApiKey=${LLM_API_KEY}
       - ASPNETCORE_ENVIRONMENT=Production
 
   frontend:
