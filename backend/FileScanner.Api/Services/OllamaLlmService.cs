@@ -15,6 +15,8 @@ public sealed class OllamaLlmService : ILlmService
     private readonly string _visionModel;
     private readonly string _textModel;
 
+    public bool SupportsVision => true;
+
     public OllamaLlmService(LlmOptions options)
     {
         var cfg = options.Ollama;
