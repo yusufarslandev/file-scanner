@@ -11,8 +11,33 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSingleton<PdfService>();
 builder.Services.AddSingleton<OcrService>();
-builder.Services.AddSingleton<LlmService>();
 builder.Services.AddSingleton<ExtractionOrchestrator>();
+
+// ─── LLM provider selection ────────────────────────────────────────────────────────
+var llmOptions = builder.Configuration.GetSection("Llm").Get<LlmOptions>()
+    ?? new LlmOptions();
+
+switch (llmOptions.Provider.ToLowerInvariant())
+{
+    case "openai":
+    case "openrouter":
+    case "gemini":
+        builder.Services.AddHttpClient<OpenAiCompatibleLlmService>();
+        builder.Services.AddSingleton<ILlmService>(sp =>
+            new OpenAiCompatibleLlmService(
+                llmOptions.Provider == "openai" ? llmOptions.OpenAi
+                : llmOptions.Provider == "openrouter" ? llmOptions.OpenRouter
+                : llmOptions.Gemini,
+                sp.GetRequiredService<IHttpClientFactory>()
+                  .CreateClient(nameof(OpenAiCompatibleLlmService))));
+        break;
+
+    case "ollama":
+    default:
+        builder.Services.AddSingleton<ILlmService>(_ => new OllamaLlmService(llmOptions));
+        break;
+}
+// ─────────────────────────────────────────────────────────────────────────────────
 
 var app = builder.Build();
 app.UseCors();

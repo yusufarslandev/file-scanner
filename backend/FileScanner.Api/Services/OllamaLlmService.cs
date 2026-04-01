@@ -4,34 +4,40 @@ using FileScanner.Api.Models;
 
 namespace FileScanner.Api.Services;
 
-public class LlmService
+/// <summary>
+/// Ollama-based LLM provider (local).
+/// Uses OllamaSharp to communicate with a local Ollama server.
+/// Fixes the critical bug where image bytes were silently dropped.
+/// </summary>
+public sealed class OllamaLlmService : ILlmService
 {
     private readonly OllamaApiClient _client;
-    private const string Model = "llava";
+    private readonly string _visionModel;
+    private readonly string _textModel;
 
-    public LlmService(IConfiguration config)
+    public OllamaLlmService(LlmOptions options)
     {
-        var baseUrl = config["OLLAMA_BASE_URL"] ?? "http://localhost:11434";
-        _client = new OllamaApiClient(baseUrl);
+        var cfg = options.Ollama;
+        _client = new OllamaApiClient(cfg.BaseUrl);
+        _visionModel = cfg.VisionModel;
+        _textModel = cfg.TextModel;
     }
 
-    // Sends image bytes directly to LLaVA multimodal model.
-    // Returns (ScanResult, confidence) tuple. Confidence 0.0 on failure.
+    // Sends image bytes directly to LLaVA multimodal model using OllamaSharp's image overload.
+    // BUG FIX: The original code encoded to base64 but passed null (no images) to SendAsync.
+    // Now we pass [imageBytes] explicitly to the SendAsync(string, IEnumerable<byte[]>) overload.
     public async Task<(ScanResult Result, double Confidence)> ExtractFromImageAsync(byte[] imageBytes)
     {
         try
         {
-            var base64 = Convert.ToBase64String(imageBytes);
-            var prompt = BuildPrompt();
-
-            var chat = new Chat(_client) { Model = Model };
+            var chat = new Chat(_client) { Model = _visionModel };
             var responseText = string.Empty;
 
-            // Send message with image using base64 encoding
-            await foreach (var chunk in chat.SendAsync(prompt))
+            // OllamaSharp's SendAsync(string, IEnumerable<byte[]>) overload sends images as base64 internally
+            await foreach (var chunk in chat.SendAsync(BuildPrompt(), [imageBytes]))
                 responseText += chunk;
 
-            return ParseResponse(responseText, "llm");
+            return ParseResponse(responseText);
         }
         catch
         {
@@ -48,13 +54,13 @@ public class LlmService
         try
         {
             var prompt = $"{BuildPrompt()}\n\nOCR Text:\n{ocrText}";
-            var chat = new Chat(_client) { Model = "llama3" };
+            var chat = new Chat(_client) { Model = _textModel };
             var responseText = string.Empty;
 
             await foreach (var chunk in chat.SendAsync(prompt))
                 responseText += chunk;
 
-            return ParseResponse(responseText, "ocr");
+            return ParseResponse(responseText);
         }
         catch
         {
@@ -74,7 +80,7 @@ public class LlmService
         Return ONLY the JSON object. No explanation, no markdown.
         """;
 
-    private static (ScanResult Result, double Confidence) ParseResponse(string responseText, string source)
+    private static (ScanResult Result, double Confidence) ParseResponse(string responseText)
     {
         try
         {
@@ -87,8 +93,7 @@ public class LlmService
 
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var result = JsonSerializer.Deserialize<ScanResult>(json, options) ?? new ScanResult();
-            var confidence = CalculateConfidence(result);
-            return (result, confidence);
+            return (result, CalculateConfidence(result));
         }
         catch
         {
@@ -100,7 +105,7 @@ public class LlmService
     private static double CalculateConfidence(ScanResult result)
     {
         var filled = 0;
-        var total = 6;
+        const int total = 6;
         if (!string.IsNullOrEmpty(result.Document.Type)) filled++;
         if (!string.IsNullOrEmpty(result.Document.Date)) filled++;
         if (!string.IsNullOrEmpty(result.Vendor.Name)) filled++;

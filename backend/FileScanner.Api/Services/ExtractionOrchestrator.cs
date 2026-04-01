@@ -6,9 +6,9 @@ namespace FileScanner.Api.Services;
 public class ExtractionOrchestrator
 {
     private readonly OcrService _ocr;
-    private readonly LlmService _llm;
+    private readonly ILlmService _llm;
 
-    public ExtractionOrchestrator(OcrService ocr, LlmService llm)
+    public ExtractionOrchestrator(OcrService ocr, ILlmService llm)
     {
         _ocr = ocr;
         _llm = llm;

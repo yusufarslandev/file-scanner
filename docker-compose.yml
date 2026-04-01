@@ -15,7 +15,8 @@ services:
     build: ./backend/FileScanner.Api
     container_name: file-scanner-backend
     environment:
-      - OLLAMA_BASE_URL=http://ollama:11434
+      - Llm__Provider=ollama
+      - Llm__Ollama__BaseUrl=http://ollama:11434
       - ASPNETCORE_ENVIRONMENT=Production
     depends_on:
       - ollama
