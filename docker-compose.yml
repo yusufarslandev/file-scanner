@@ -6,12 +6,6 @@ services:
       - ollama_data:/root/.ollama
       - ./ollama/entrypoint.sh:/entrypoint.sh
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434/"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 600s
 
   backend:
     build: ./backend/FileScanner.Api
@@ -20,14 +14,7 @@ services:
       - OLLAMA_BASE_URL=http://ollama:11434
       - ASPNETCORE_ENVIRONMENT=Production
     depends_on:
-      ollama:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
-      interval: 15s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
+      - ollama
 
   frontend:
     build: ./frontend
@@ -35,8 +22,7 @@ services:
     expose:
       - "80"
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
 
 volumes:
   ollama_data:
