@@ -17,6 +17,8 @@ public sealed class OpenAiCompatibleLlmService : ILlmService
     private readonly string _visionModel;
     private readonly string _textModel;
 
+    public bool SupportsVision => true;
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
