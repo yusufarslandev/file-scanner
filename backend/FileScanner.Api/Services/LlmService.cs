@@ -12,7 +12,8 @@ public class LlmService
     public LlmService(IConfiguration config)
     {
         var baseUrl = config["OLLAMA_BASE_URL"] ?? "http://localhost:11434";
-        _client = new OllamaApiClient(new Uri(baseUrl));
+        var httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(5) };
+        _client = new OllamaApiClient(new Uri(baseUrl), httpClient);
     }
 
     // Sends image bytes directly to LLaVA multimodal model.
