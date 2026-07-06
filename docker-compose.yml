@@ -2,6 +2,8 @@ services:
   backend:
     build: ./backend/FileScanner.Api
     container_name: file-scanner-backend
+    volumes:
+      - file-scanner-data:/app
     environment:
       - Llm__Provider=gemini
       - Llm__Gemini__ApiKey=${LLM_API_KEY}
@@ -12,3 +14,7 @@ services:
     container_name: file-scanner-frontend
     expose:
       - "80"
+
+volumes:
+  file-scanner-data:
+    driver: local
