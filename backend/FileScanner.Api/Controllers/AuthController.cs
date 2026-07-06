@@ -87,6 +87,22 @@ public class AuthController : ControllerBase
         return Ok(new { message = "API key kaydedildi." });
     }
 
+    [HttpPost("preferences")]
+    [Authorize]
+    public async Task<ActionResult> SavePreferences([FromBody] UserPreferencesRequest req)
+    {
+        var userId = GetUserId();
+        var user = await _db.Users.FindAsync(userId);
+        if (user == null) return NotFound();
+
+        user.Provider = req.Provider ?? "9router";
+        user.PreferredVisionModel = req.VisionModel ?? "my-combo";
+        user.PreferredTextModel = req.TextModel ?? "my-combo";
+        await _db.SaveChangesAsync();
+
+        return Ok(new { message = "Tercihler kaydedildi." });
+    }
+
     [HttpGet("me")]
     [Authorize]
     public async Task<ActionResult<UserInfo>> GetMe()
@@ -98,7 +114,10 @@ public class AuthController : ControllerBase
         {
             Id = user.Id,
             Email = user.Email,
-            HasApiKey = !string.IsNullOrEmpty(user.ApiKey)
+            HasApiKey = !string.IsNullOrEmpty(user.ApiKey),
+            Provider = user.Provider,
+            VisionModel = user.PreferredVisionModel,
+            TextModel = user.PreferredTextModel
         });
     }
 

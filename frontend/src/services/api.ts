@@ -102,6 +102,32 @@ export async function saveApiKey(apiKey: string): Promise<void> {
   }
 }
 
+export interface UserPreferences {
+  provider?: string;
+  visionModel?: string;
+  textModel?: string;
+}
+
+export async function savePreferences(prefs: UserPreferences): Promise<void> {
+  const response = await fetch('/api/auth/preferences', {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      ...getAuthHeaders()
+    },
+    body: JSON.stringify({
+      provider: prefs.provider,
+      visionModel: prefs.visionModel,
+      textModel: prefs.textModel,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => ({}));
+    throw new Error(errorBody.error ?? `HTTP ${response.status}`);
+  }
+}
+
 // Scanner API
 export async function scanFile(file: File): Promise<ScanResult> {
   const formData = new FormData();

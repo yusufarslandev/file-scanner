@@ -61,10 +61,20 @@ public class UserInfo
     public int Id { get; set; }
     public string Email { get; set; } = string.Empty;
     public bool HasApiKey { get; set; }
+    public string Provider { get; set; } = "9router";
+    public string VisionModel { get; set; } = "my-combo";
+    public string TextModel { get; set; } = "my-combo";
 }
 
 public class ApiKeyRequest
 {
     [Required]
     public string ApiKey { get; set; } = string.Empty;
+}
+
+public class UserPreferencesRequest
+{
+    public string? Provider { get; set; }
+    public string? VisionModel { get; set; }
+    public string? TextModel { get; set; }
 }

@@ -78,7 +78,7 @@ public class ScanController : ControllerBase
         {
             var pages = _pdf.ExtractPageImages(fileBytes);
             if (pages.Count == 0)
-                return StatusCode(500, new { error = "PDF'den görüntü çıkarılamadı." });
+                return StatusCode(500, new { error = "PDF'den görüntü çıkarılamadı. Bu PDF taranmış bir belge değil veya görsel içermiyor. Lütfen PNG/JPG formatında deneyin." });
             result = await orchestrator.ProcessMultiPageAsync(pages);
         }
         else
