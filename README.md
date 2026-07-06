@@ -2,7 +2,7 @@
 
 Fiş ve faturalardan yapılandırılmış veri çıkaran yerel (local-only) web uygulaması. Tamamen ücretsiz ve internet bağlantısı gerektirmez — OCR ve yapay zeka işlemleri kendi bilgisayarınızda çalışır.
 
-## Özellikler
+## Özellikler 3333
 
 - PNG, JPG, JPEG, WEBP ve çok sayfalı PDF desteği (maks. 20 MB)
 - Tesseract OCR ve Ollama LLaVA paralel işleme, en yüksek güven skoru seçilir
