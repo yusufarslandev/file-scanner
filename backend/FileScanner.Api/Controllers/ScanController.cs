@@ -56,14 +56,15 @@ public class ScanController : ControllerBase
         // Get user's API key (decrypted)
         var apiKey = AuthController.Decrypt(user.ApiKey);
         
-        // Create LLM service with user's API key
+        // Create LLM service with user's API key and provider preferences
         var llmService = new OpenAiCompatibleLlmService(
             new OpenAiCompatibleOptions
             {
                 ApiKey = apiKey,
                 BaseUrl = "https://9router.mezabilisim.com/v1",
-                VisionModel = "my-combo",
-                TextModel = "my-combo"
+                // Use user's preferred models (or fall back to defaults if not set)
+                VisionModel = string.IsNullOrEmpty(user.PreferredVisionModel) ? "my-combo" : user.PreferredVisionModel,
+                TextModel = string.IsNullOrEmpty(user.PreferredTextModel) ? "my-combo" : user.PreferredTextModel
             },
             _httpFactory.CreateClient(nameof(OpenAiCompatibleLlmService))
         );

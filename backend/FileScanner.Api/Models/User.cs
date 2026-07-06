@@ -22,6 +22,11 @@ public class User
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime? LastLoginAt { get; set; }
+    
+    // User LLM provider preferences (persistent from appsettings defaults)
+    public string Provider { get; set; } = "9router";
+    public string PreferredVisionModel { get; set; } = "my-combo";
+    public string PreferredTextModel { get; set; } = "my-combo";
 }
 
 public class RegisterRequest
