@@ -1,6 +1,5 @@
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
-using UglyToad.PdfPig.Legacy;
 
 namespace FileScanner.Api.Services;
 
