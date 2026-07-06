@@ -76,10 +76,29 @@ public class ScanController : ControllerBase
         ScanResult result;
         if (ext == ".pdf")
         {
-            var pages = _pdf.ExtractPageImages(fileBytes);
-            if (pages.Count == 0)
-                return StatusCode(500, new { error = "PDF'den görüntü çıkarılamadı. Bu PDF taranmış bir belge değil veya görsel içermiyor. Lütfen PNG/JPG formatında deneyin." });
-            result = await orchestrator.ProcessMultiPageAsync(pages);
+            var (pages, extractedText) = _pdf.ExtractPageImages(fileBytes);
+            
+            // If we have text extracted, use it for processing
+            if (!string.IsNullOrEmpty(extractedText))
+            {
+                Console.WriteLine($"[ScanController] Using extracted PDF text: {extractedText.Length} characters");
+                var llmTextResult = await llmService.ExtractFromTextAsync(extractedText);
+                result = llmTextResult.Result;
+                result.OcrText = extractedText;
+                result.Meta = new MetaInfo
+                {
+                    Confidence = llmTextResult.Confidence,
+                    Source = ExtractionSource.Ocr,
+                    ProcessingTimeMs = 0 // We don't have accurate timing here
+                };
+            }
+            // Otherwise fall back to image extraction (scanned PDFs)
+            else
+            {
+                if (pages.Count == 0)
+                    return StatusCode(500, new { error = "PDF'den görüntü çıkarılamadı. Bu PDF taranmış bir belge değil veya görsel içermiyor. Lütfen PNG/JPG formatında deneyin." });
+                result = await orchestrator.ProcessMultiPageAsync(pages);
+            }
         }
         else
         {
