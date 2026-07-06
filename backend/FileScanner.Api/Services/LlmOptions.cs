@@ -3,12 +3,13 @@ namespace FileScanner.Api.Services;
 /// <summary>Root configuration for LLM provider selection and settings.</summary>
 public sealed class LlmOptions
 {
-    /// <summary>Provider name: "ollama", "openai", "openrouter", or "gemini".</summary>
+    /// <summary>Provider name: "ollama", "openai", "openrouter", "9router", or "gemini".</summary>
     public string Provider { get; set; } = "ollama";
 
     public OllamaOptions Ollama { get; set; } = new();
     public OpenAiCompatibleOptions OpenAi { get; set; } = new();
     public OpenAiCompatibleOptions OpenRouter { get; set; } = new();
+    public OpenAiCompatibleOptions Ninerouter { get; set; } = new();
     public OpenAiCompatibleOptions Gemini { get; set; } = new();
 }
 
